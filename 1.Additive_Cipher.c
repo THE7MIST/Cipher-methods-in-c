@@ -127,3 +127,68 @@ int main() {
 
     return 0;
 }
+
+
+
+#######################################################
+# MINIMAL SYSTEM PROMPT
+#######################################################
+
+# ---------- COLORS ----------
+
+RESET="\[\e[0m\]"
+PURPLE="\[\e[38;5;135m\]"
+MAGENTA="\[\e[38;5;201m\]"
+PINK="\[\e[38;5;213m\]"
+WHITE="\[\e[97m\]"
+
+# ---------- SYSTEM INFO ----------
+
+get_cpu() {
+    uptime | awk -F'load average:' '{print $2}' | cut -d, -f1
+}
+
+get_ram() {
+    free | awk '/Mem:/ {printf("%.0f%%", $3/$2 * 100)}'
+}
+
+get_disk() {
+    df -h / | awk 'NR==2 {print $5}'
+}
+
+# ---------- EXECUTION TIMER ----------
+
+timer_start() {
+    CMD_START=$(date +%s)
+}
+
+timer_stop() {
+    CMD_END=$(date +%s)
+    CMD_TIME=$((CMD_END - CMD_START))
+}
+
+trap timer_start DEBUG
+PROMPT_COMMAND="timer_stop"
+
+# ---------- SUCCESS / FAIL ----------
+
+rocket_status() {
+    if [[ $? == 0 ]]; then
+        echo "🚀"
+    else
+        echo "💥"
+    fi
+}
+
+# ---------- PROMPT ----------
+
+PS1='\n'\
+"${MAGENTA}\$(date +%H:%M:%S)${RESET}"\
+"${PURPLE} | ${PINK}\u@\h${RESET}"\
+"${PURPLE} | ${MAGENTA}\w${RESET}"\
+"${PURPLE} | cmd:${PINK}\!${RESET}"\
+"${PURPLE} | cpu:${PINK}\$(get_cpu)${RESET}"\
+"${PURPLE} | mem:${PINK}\$(get_ram)${RESET}"\
+"${PURPLE} | disk:${PINK}\$(get_disk)${RESET}"\
+"${PURPLE} | time:${PINK}\${CMD_TIME}s${RESET}"\
+"\n${WHITE}\$(rocket_status) ${RESET}"
