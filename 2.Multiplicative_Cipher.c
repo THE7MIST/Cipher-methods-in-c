@@ -97,3 +97,11 @@ int main()
 
     return 0;
 }
+
+
+
+
+
+
+
+PS1='\[\e[38;5;46m\][\u@\h \w \[\e[38;5;240m\]cpu:$(uptime | awk -F"load average:" "{print \$2}" | cut -d, -f1) mem:$(free -m | awk "/Mem:/ {printf \"%d%%\", \$3/\$2 * 100}") bg:$(jobs -p | wc -l) cmd:$(history 1 | awk "{print \$1}") \[\e[38;5;46m\]] ▶\[\e[0m\] '
