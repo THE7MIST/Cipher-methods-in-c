@@ -1,20 +1,18 @@
-# Reverse map
-declare -A decode_table
+result=""
 
-for key in "${!morse_table[@]}"; do
-    value="${morse_table[$key]}"
-    decode_table["$value"]="$key"
-done
+for i in "${decode[@]}"; do
 
-# Decode
-decoded=""
-
-for code in "${morse_msg[@]}"; do
-    if [[ "$code" == "/" ]]; then
-        decoded+=" "
-    else
-        decoded+="${decode_table[$code]}"
+    if [[ "$i" == "/" ]]; then
+        result+=" "
+        continue
     fi
+
+    for k in "${!morse_table[@]}"; do
+        if [[ "${morse_table[$k]}" == "$i" ]]; then
+            result+="$k"
+        fi
+    done
+
 done
 
-echo "$decoded"
+echo "$result"
