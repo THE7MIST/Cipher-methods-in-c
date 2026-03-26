@@ -1,0 +1,20 @@
+# Reverse map
+declare -A decode_table
+
+for key in "${!morse_table[@]}"; do
+    value="${morse_table[$key]}"
+    decode_table["$value"]="$key"
+done
+
+# Decode
+decoded=""
+
+for code in "${morse_msg[@]}"; do
+    if [[ "$code" == "/" ]]; then
+        decoded+=" "
+    else
+        decoded+="${decode_table[$code]}"
+    fi
+done
+
+echo "$decoded"
