@@ -23,6 +23,9 @@ nmcli connection modify ens160 connection.autoconnect yes
 
 
 
+
+vim /etc/sysconfig/network-scripts/ifcfg-ens160
+
 TYPE=Ethernet
 BOOTPROTO=none
 NAME=ens160
