@@ -1,0 +1,25 @@
+# /etc/dhcp/dhcpd.conf
+
+# Global Settings
+option domain-name "sniper.com";
+option domain-name-servers 192.168.119.128, 192.168.119.134, 192.168.119.2;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+authoritative;
+log-facility local7;
+
+# Subnet Configuration
+subnet 192.168.119.0 netmask 255.255.255.0 {
+    range 192.168.119.10 192.168.119.100;
+    option routers 192.168.119.2;
+    option subnet-mask 255.255.255.0;
+    option broadcast-address 192.168.119.255;
+}
+
+# Optional: Static IP (Example)
+host fantasia {
+    hardware ethernet 08:00:07:26:c0:a5;
+    fixed-address 192.168.119.50;
+}
