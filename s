@@ -20,3 +20,15 @@ nmcli connection modify ens160 ipv4.addresses 192.168.127.132/24
 nmcli connection modify ens160 ipv4.gateway 192.168.127.2
 nmcli connection modify ens160 ipv4.method manual
 nmcli connection modify ens160 connection.autoconnect yes
+
+
+
+TYPE=Ethernet
+BOOTPROTO=none
+NAME=ens160
+DEVICE=ens160
+ONBOOT=yes
+IPADDR=192.168.127.132
+PREFIX=24
+GATEWAY=192.168.127.2
+DNS1=8.8.8.8
