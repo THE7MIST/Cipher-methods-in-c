@@ -1,37 +1,86 @@
-#!/bin/bash
+" =========================
+" BASIC SETTINGS
+" =========================
+set nocompatible              " Use Vim defaults (not Vi)
+set encoding=utf-8
+set number                    " Show line numbers
+set relativenumber            " Relative line numbers
+set cursorline                " Highlight current line
+set showcmd                   " Show command in bottom
+set ruler                     " Show cursor position
+set wildmenu                  " Better command-line completion
 
-declare -A morse_table=(
-[A]=".-" [B]="-..." [C]="-.-." [D]="-.."
-[E]="." [F]="..-." [G]="--." [H]="...."
-[I]=".." [J]=".---" [K]="-.-" [L]=".-.."
-[M]="--" [N]="-." [O]="---" [P]=".--."
-[Q]="--.-" [R]=".-." [S]="..." [T]="-"
-[U]="..-" [V]="...-" [W]=".--" [X]="-..-"
-[Y]="-.--" [Z]="--.."
-[0]="-----" [1]=".----" [2]="..---" [3]="...--"
-[4]="....-" [5]="....." [6]="-...." [7]="--..."
-[8]="---.." [9]="----."
-[" "]="/"
-)
+" =========================
+" SEARCH SETTINGS
+" =========================
+set ignorecase                " Case insensitive search
+set smartcase                 " Case-sensitive if uppercase used
+set hlsearch                  " Highlight search
+set incsearch                 " Incremental search
 
-# input array
-decode=( .... . -.-- / .... .- -.-. -.- . .-. )
+" =========================
+" INDENTATION (IMPORTANT)
+" =========================
+set autoindent                " Copy indent from current line
+set smartindent               " Smart auto indentation
+set expandtab                 " Use spaces instead of tabs
+set tabstop=4                 " Tab = 4 spaces
+set shiftwidth=4              " Indent = 4 spaces
+set softtabstop=4
+set smarttab
 
-result=""
+" =========================
+" FILE & BACKUP
+" =========================
+set nobackup
+set nowritebackup
+set noswapfile
 
-for i in "${decode[@]}"; do
+" =========================
+" APPEARANCE
+" =========================
+syntax on                     " Enable syntax highlighting
+set background=dark
+colorscheme desert            " You can change (try: elflord, ron, slate)
 
-    if [[ "$i" == "/" ]]; then
-        result+=" "
-        continue
-    fi
+" =========================
+" STATUS LINE
+" =========================
+set laststatus=2              " Always show status bar
 
-    for k in "${!morse_table[@]}"; do
-        if [[ "${morse_table[$k]}" == "$i" ]]; then
-            result+="$k"
-        fi
-    done
+" =========================
+" MOUSE SUPPORT
+" =========================
+set mouse=a
 
-done
+" =========================
+" SCROLLING
+" =========================
+set scrolloff=5               " Keep 5 lines visible when scrolling
 
-echo "$result"
+" =========================
+" CLIPBOARD
+" =========================
+set clipboard=unnamedplus     " Use system clipboard
+
+" =========================
+" LINE WRAP
+" =========================
+set nowrap                    " Disable line wrapping
+
+" =========================
+" KEY MAPPINGS
+" =========================
+inoremap jk <ESC>             " Exit insert mode quickly
+nnoremap <C-s> :w<CR>         " Ctrl+s to save
+nnoremap <C-q> :q<CR>         " Ctrl+q to quit
+
+" =========================
+" FILETYPE SETTINGS
+" =========================
+filetype plugin indent on     " Enable filetype detection + indent
+
+" =========================
+" AUTO REMOVE TRAILING SPACES
+" =========================
+autocmd BufWritePre * %s/\s\+$//e
