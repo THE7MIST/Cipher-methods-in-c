@@ -1,4 +1,4 @@
-✅ 1. Install OpenSSH Server (on BOTH VMs)
+in✅ 1. Install OpenSSH Server (on BOTH VMs)
 Run PowerShell as Administrator:
 PowerShell
 Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH.Server*'
@@ -87,3 +87,52 @@ Check:
 PowerShell
 netstat -an | findstr :22
 Should show LISTENING
+
+
+
+
+
+
+
+
+
+
+................................
+
+
+
+
+
+
+
+But ping is blocked ❌
+✅ FIX (Do this on BOTH VMs)
+Run PowerShell as Administrator:
+PowerShell
+Enable-NetFirewallRule -DisplayGroup "File and Printer Sharing"
+OR more precise:
+PowerShell
+New-NetFirewallRule -Name "Allow ICMPv4" `
+-Protocol ICMPv4 `
+-IcmpType 8 `
+-Enabled True `
+-Action Allow
+✅ QUICK TEST (FASTEST WAY)
+Temporarily disable firewall on BOTH:
+PowerShell
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+👉 Now test:
+Batch file
+ping 192.168.119.129
+ping 192.168.119.128
+🧠 Expected Result
+After fix:
+
+Reply from 192.168.119.xxx
+on BOTH sides.
+⚠️ Important Insight
+Your network config is actually correct:
+IP range ✔
+Subnet ✔
+Gateway ✔
+Same network ✔
