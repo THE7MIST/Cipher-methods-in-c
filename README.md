@@ -29,3 +29,19 @@ else
 fi
 
 jAjamr=[kNqoy$
+
+
+<VirtualHost *:80>
+    ServerName freshmart.com
+    ServerAlias www.freshmart.com
+
+    DocumentRoot /home/freshmart/public_html
+
+    <Directory /home/freshmart/public_html>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog /var/log/httpd/freshmart_error.log
+    CustomLog /var/log/httpd/freshmart_access.log combined
+</VirtualHost>
