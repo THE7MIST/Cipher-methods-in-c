@@ -1,0 +1,248 @@
+Here is a clean GUI-only procedure for your practical (Windows Server 2022/2025 style). Follow step-by-step exactly.
+
+
+---
+
+🖥️ PART 1 — DNS CONFIGURATION (GUI)
+
+🔹 1. Open DNS Manager
+
+Click Start → Server Manager
+
+Go to Tools → DNS
+
+
+
+---
+
+🔹 2. Create Zone (Micromax.lab)
+
+1. Expand your server name
+
+
+2. Right-click Forward Lookup Zones → New Zone
+
+
+
+Wizard Settings:
+
+Zone Type → ✅ Primary Zone
+
+❌ Uncheck Store the zone in Active Directory
+
+Zone Name:
+
+micromax.lab
+
+Zone File → default (Next)
+
+Dynamic Updates → ❌ Do not allow dynamic updates
+
+Click Finish
+
+
+
+---
+
+🔹 3. Create Records
+
+✔ A Record (www)
+
+Right-click inside zone → New Host (A or AAAA)
+
+Name: www
+
+IP: 192.168.x.x
+
+Click Add Host
+
+
+
+
+---
+
+✔ A Record (ftp)
+
+Same steps:
+
+Name: ftp
+
+IP: 192.168.x.x
+
+
+
+
+---
+
+✔ CNAME Record (files)
+
+Right-click → New Alias (CNAME)
+
+Alias name: files
+
+Fully qualified domain name:
+
+ftp.micromax.lab
+
+OK
+
+
+
+
+---
+
+✔ A Record (mailsrv)
+
+New Host:
+
+Name: mailsrv
+
+IP: 192.168.x.x
+
+
+
+
+---
+
+✔ MX Record (mail)
+
+Right-click → Other New Records
+
+Select Mail Exchanger (MX) → Create
+
+Host or child domain: (leave blank or @)
+
+Fully qualified domain name:
+
+mailsrv.micromax.lab
+
+Priority: 10
+
+OK
+
+
+
+
+---
+
+🖥️ PART 2 — DHCP CONFIGURATION (GUI)
+
+🔹 1. Open DHCP Manager
+
+Server Manager → Tools → DHCP
+
+
+
+---
+
+🔹 2. Create Scope
+
+1. Expand server → IPv4
+
+
+2. Right-click IPv4 → New Scope
+
+
+
+
+---
+
+🔹 3. Scope Wizard
+
+Step-by-step:
+
+✔ Name
+
+MicromaxScope
+
+✔ IP Range (100 clients)
+
+Example:
+
+Start IP: 192.168.1.100
+End IP:   192.168.1.199
+
+✔ Subnet Mask
+
+Auto-filled → usually:
+
+255.255.255.0
+
+✔ Add Exclusions
+
+→ Skip (Next)
+
+✔ Lease Duration
+
+→ Default (Next)
+
+
+---
+
+🔹 4. Configure Options (IMPORTANT)
+
+✔ Default Gateway
+
+192.168.1.1
+
+✔ DNS Server
+
+Parent domain:
+
+micromax.lab
+
+DNS Server IP:
+
+(Your Domain Controller IP)
+
+Example: 192.168.1.10
+
+
+
+---
+
+🔹 5. Activate Scope
+
+Select Yes, activate this scope
+
+
+
+---
+
+✅ TESTING (GUI + CMD)
+
+🔹 On Client Machine
+
+Open Command Prompt:
+
+ipconfig /release
+ipconfig /renew
+
+Then:
+
+ping www.micromax.lab
+ping ftp.micromax.lab
+ping files.micromax.lab
+
+
+---
+
+⚠️ Practical Tips (Important)
+
+✔ DNS & DHCP must be on same network
+
+✔ Use same IP in A records (server IP)
+
+✔ CNAME must point to FQDN (not IP)
+
+✔ MX must point to hostname (not IP)
+
+✔ Scope must be activated
+
+
+
+---
+
+If you want, I can next give: 👉 Step-by-step screenshots matching your exact UI
+👉 Viva answers (very important for exam)
+👉 Common errors + fixes (based on your setup)
