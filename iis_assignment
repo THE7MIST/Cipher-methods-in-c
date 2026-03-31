@@ -1,0 +1,138 @@
+# ==============================
+# 1. INSTALL IIS + FTP FEATURES
+# ==============================
+Install-WindowsFeature -Name Web-Server, Web-Common-Http, Web-Default-Doc, Web-Static-Content, `
+Web-Basic-Auth, Web-Mgmt-Console, Web-Ftp-Server, Web-Ftp-Service, Web-Ftp-Ext -IncludeManagementTools
+
+
+# ==============================
+# 2. CREATE DIRECTORIES
+# ==============================
+New-Item -Path "C:\inetpub\dedicated" -ItemType Directory -Force
+New-Item -Path "C:\inetpub\virtual1" -ItemType Directory -Force
+New-Item -Path "C:\inetpub\virtual2" -ItemType Directory -Force
+New-Item -Path "C:\ftproot" -ItemType Directory -Force
+
+
+# ==============================
+# 3. CREATE INDEX FILES
+# ==============================
+Set-Content "C:\inetpub\dedicated\index.html" "This is Dedicated Site"
+Set-Content "C:\inetpub\virtual1\index.html" "This is Virtual Site 1"
+Set-Content "C:\inetpub\virtual2\index.html" "This is Virtual Site 2"
+
+
+# ==============================
+# 4. CREATE USERS
+# ==============================
+net user webuser P@ssw0rd /add
+net user ftpuser P@ssw0rd /add
+
+
+# ==============================
+# 5. IMPORT IIS MODULE
+# ==============================
+Import-Module WebAdministration
+
+
+# ==============================
+# 6. CREATE DEDICATED SITE
+# ==============================
+New-Website -Name "DedicatedSite" `
+-Port 80 `
+-PhysicalPath "C:\inetpub\dedicated" `
+-HostHeader "dedicated.ditiss2026.com"
+
+
+# ==============================
+# 7. CREATE VIRTUAL HOSTS
+# ==============================
+New-Website -Name "VirtualSite1" `
+-Port 80 `
+-PhysicalPath "C:\inetpub\virtual1" `
+-HostHeader "site1.ditiss2026.com"
+
+New-Website -Name "VirtualSite2" `
+-Port 80 `
+-PhysicalPath "C:\inetpub\virtual2" `
+-HostHeader "site2.ditiss2026.com"
+
+
+# ==============================
+# 8. ENABLE BASIC AUTH (VirtualSite2)
+# ==============================
+Set-WebConfigurationProperty `
+-Filter "/system.webServer/security/authentication/anonymousAuthentication" `
+-PSPath "IIS:\Sites\VirtualSite2" `
+-Name enabled -Value false
+
+Set-WebConfigurationProperty `
+-Filter "/system.webServer/security/authentication/basicAuthentication" `
+-PSPath "IIS:\Sites\VirtualSite2" `
+-Name enabled -Value true
+
+
+# ==============================
+# 9. NTFS PERMISSIONS (WEBUSER)
+# ==============================
+icacls "C:\inetpub\virtual2" /grant webuser:(RX)
+
+
+# ==============================
+# 10. CREATE FTP SITE
+# ==============================
+New-WebFtpSite -Name "SecureFTP" `
+-Port 21 `
+-PhysicalPath "C:\ftproot" `
+-Force
+
+
+# ==============================
+# 11. CONFIGURE FTP AUTH
+# ==============================
+Set-ItemProperty "IIS:\Sites\SecureFTP" `
+-Name ftpServer.security.authentication.anonymousAuthentication.enabled -Value $false
+
+Set-ItemProperty "IIS:\Sites\SecureFTP" `
+-Name ftpServer.security.authentication.basicAuthentication.enabled -Value $true
+
+
+# ==============================
+# 12. FTP AUTHORIZATION RULE
+# ==============================
+Add-WebConfiguration `
+-Filter "/system.ftpServer/security/authorization" `
+-PSPath "IIS:\Sites\SecureFTP" `
+-Value @{
+    accessType="Allow";
+    users="ftpuser";
+    permissions="Read, Write"
+}
+
+
+# ==============================
+# 13. NTFS PERMISSIONS (FTPUSER)
+# ==============================
+icacls "C:\ftproot" /grant ftpuser:(M)
+
+
+# ==============================
+# 14. OPEN FIREWALL FOR FTP
+# ==============================
+Enable-NetFirewallRule -DisplayGroup "FTP Server"
+
+
+# ==============================
+# 15. HOSTS FILE ENTRY (OPTIONAL)
+# ==============================
+$ip = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -notlike "169.*"}).IPAddress[0]
+
+Add-Content "C:\Windows\System32\drivers\etc\hosts" "$ip dedicated.ditiss2026.com"
+Add-Content "C:\Windows\System32\drivers\etc\hosts" "$ip site1.ditiss2026.com"
+Add-Content "C:\Windows\System32\drivers\etc\hosts" "$ip site2.ditiss2026.com"
+
+
+# ==============================
+# DONE
+# ==============================
+Write-Host "Setup Completed Successfully 🚀"
