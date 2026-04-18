@@ -1,3 +1,12 @@
+deb http://old-releases.ubuntu.com/ubuntu lunar main restricted universe multiverse
+deb http://old-releases.ubuntu.com/ubuntu lunar-updates main restricted universe multiverse
+deb http://old-releases.ubuntu.com/ubuntu lunar-security main restricted universe multiverse
+deb http://old-releases.ubuntu.com/ubuntu lunar-backports main restricted universe multiverse
+
+
+
+
+
 Here is a clean GUI-only procedure for your practical (Windows Server 2022/2025 style). Follow step-by-step exactly.
 
 
