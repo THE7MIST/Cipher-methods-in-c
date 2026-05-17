@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-// Function to encrypt a character based on its type (lowercase, uppercase, or digit)
+// Function to encrypt a character based on its type (lowercase, uppercase, or digit) 
 void encryptCharacter(char text[], int key) {
     for (int i = 0; text[i] != '\0'; ++i) {
         char ch = text[i];
